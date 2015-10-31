@@ -56,10 +56,32 @@ This function accepts two arguments: filename and page number.")
 (defvar x86-lookup-index nil
   "Alist mapping instructions to page numbers.")
 
+(defvar x86-lookup--expansions
+  '(("h$" "" "nta" "t0" "t1" "t2" "w" "wt1")
+    ("cc$" "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le" "mp"
+           "mpe" "na" "nae" "nb" "nbe" "nc" "ne" "ng" "nge" "nl" "nle"
+           "no" "np" "ns" "nz" "o" "p" "pe" "po" "rcxz" "s" "z")
+    ("$" "")) ; fallback "match"
+  "How to expand mnemonics into multiple mnemonics.")
+
+(defun x86-lookup--expand (names page)
+  "Expand string of PDF-sourced mnemonics into user-friendly mnemonics."
+  (let ((case-fold-search nil)
+        (rev-string-match-p (lambda (s re) (string-match-p re s))))
+    (cl-loop for mnemonic in (split-string names "/")
+             for match = (cl-assoc mnemonic x86-lookup--expansions
+                                   :test rev-string-match-p)
+             for chop-point = (string-match-p (car match) mnemonic)
+             for tails = (cdr match)
+             for chopped = (downcase (substring mnemonic 0 chop-point))
+             nconc (cl-loop for tail in tails
+                            collect (cons (concat chopped tail) page)))))
+
 (cl-defun x86-lookup-create-index (&optional (pdf x86-lookup-pdf))
   "Create an index alist from PDF mapping mnemonics to page numbers.
 This function requires the pdftotext command line program."
-  (let ((mnemonic "INSTRUCTION SET REFERENCE, [A-Z]-[A-Z]\n\n\\([A-Z/]+\\) ?—")
+  (let ((mnemonic (concat "INSTRUCTION SET REFERENCE, [A-Z]-[A-Z]\n\n"
+                          "\\([A-Za-z/]+\\) ?—"))
         (case-fold-search nil))
     (with-temp-buffer
       (call-process x86-lookup-pdftotext-program nil t nil
@@ -68,10 +90,7 @@ This function requires the pdftotext command line program."
       (cl-loop for page upfrom 1
                while (< (point) (point-max))
                when (looking-at mnemonic)
-               nconc (let* ((names (downcase (match-string 1)))
-                            (split (split-string names "/")))
-                       (mapcar (lambda (s) (cons s page)) split))
-               into index
+               nconc (x86-lookup--expand (match-string 1) page) into index
                do (forward-page)
                finally (cl-return (cl-remove-duplicates
                                    index :key #'car :test #'string=))))))
