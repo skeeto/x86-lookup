@@ -43,15 +43,38 @@
 
 (require 'cl-lib)
 
-(defvar x86-lookup-pdf nil
-  "Path to Intel's manual containing the instruction set reference.")
+(defgroup x86-lookup ()
+  "Options for x86 instruction set lookup."
+  :group 'extensions)
 
-(defvar x86-lookup-pdftotext-program "pdftotext"
-  "Path to pdftotext, part of Popper.")
+(defcustom x86-lookup-pdf nil
+  "Path to Intel's manual containing the instruction set reference."
+  :group 'x86-lookup
+  :type '(choice (const nil)
+                 (file :must-match t)))
 
-(defvar x86-lookup-browse-pdf-function #'x86-lookup-browse-pdf-any
+(defcustom x86-lookup-pdftotext-program "pdftotext"
+  "Path to pdftotext, part of Popper."
+  :group 'x86-lookup
+  :type 'string)
+
+(defcustom x86-lookup-browse-pdf-function #'x86-lookup-browse-pdf-any
   "A function that launches a PDF viewer at a specific page.
-This function accepts two arguments: filename and page number.")
+This function accepts two arguments: filename and page number."
+  :group 'x86-lookup
+  :type '(choice (function-item :tag "First suitable PDF reader" :value
+                                x86-lookup-browse-pdf-any)
+                 (function-item :tag "Evince" :value
+                                x86-lookup-browse-pdf-evince)
+                 (function-item :tag "Xpdf" :value
+                                x86-lookup-browse-pdf-xpdf)
+                 (function-item :tag "Okular" :value
+                                x86-lookup-browse-pdf-okular)
+                 (function-item :tag "gv" :value
+                                x86-lookup-browse-pdf-gv)
+                 (function-item :tag "browse-url"
+                                :value x86-lookup-browse-pdf-browser)
+                 (function :tag "Your own function")))
 
 (defvar x86-lookup-index nil
   "Alist mapping instructions to page numbers.")
