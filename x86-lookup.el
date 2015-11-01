@@ -98,7 +98,7 @@ This function requires the pdftotext command line program."
 (defun x86-lookup-ensure-index ()
   "Ensure the PDF index has been created, returning the index."
   (if (null x86-lookup-index)
-    (if (not (file-exists-p (file-truename x86-lookup-pdf)))
+      (if (not (and x86-lookup-pdf (file-exists-p x86-lookup-pdf)))
         (error "No PDF available. Set `x86-lookup-pdf'.")
       (message "Generating mnemonic index ...")
       (setf x86-lookup-index (x86-lookup-create-index)))
