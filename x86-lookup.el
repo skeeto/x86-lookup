@@ -81,7 +81,7 @@ This function accepts two arguments: filename and page number."
                   (getenv "LocalAppData")
                   "~/.cache")))
     (expand-file-name "x86-lookup" base))
-  "Location to store the PDF mnemonic index."
+  "Directory where the PDF mnemonic index with be cached."
   :type 'string)
 
 (defvar x86-lookup-index nil
