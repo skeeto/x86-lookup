@@ -76,6 +76,11 @@ This function accepts two arguments: filename and page number."
                                 :value x86-lookup-browse-pdf-browser)
                  (function :tag "Your own function")))
 
+(defcustom x86-lookup-cache-directory
+  (expand-file-name "x86-lookup" (or (getenv "XDG_CACHE_HOME") "~/.cache"))
+  "Location to store the PDF mnemonic index."
+  :type 'string)
+
 (defvar x86-lookup-index nil
   "Alist mapping instructions to page numbers.")
 
@@ -118,14 +123,40 @@ This function requires the pdftotext command line program."
                finally (cl-return (cl-remove-duplicates
                                    index :key #'car :test #'string=))))))
 
+(defun x86-lookup--save-index (pdf index)
+  "Save INDEX for PDF in `x86-lookup-cache-directory'."
+  (let* ((hash (sha1 pdf))
+         (cache-file (expand-file-name hash x86-lookup-cache-directory)))
+    (mkdir x86-lookup-cache-directory t)
+    (with-temp-file cache-file
+      (prin1 index (current-buffer)))
+    index))
+
+(defun x86-lookup--load-index (pdf)
+  "Return index PDF from `x86-lookup-cache-directory'."
+  (let* ((hash (sha1 pdf))
+         (cache-file (expand-file-name hash x86-lookup-cache-directory)))
+    (when (file-exists-p cache-file)
+      (with-temp-buffer
+        (insert-file-contents cache-file)
+        (setf (point) (point-min))
+        (ignore-errors (read (current-buffer)))))))
+
 (defun x86-lookup-ensure-index ()
   "Ensure the PDF index has been created, returning the index."
-  (if (null x86-lookup-index)
-      (if (not (and x86-lookup-pdf (file-exists-p x86-lookup-pdf)))
-        (error "No PDF available. Set `x86-lookup-pdf'.")
-      (message "Generating mnemonic index ...")
-      (setf x86-lookup-index (x86-lookup-create-index)))
-    x86-lookup-index))
+  (when (null x86-lookup-index)
+    (cond
+     ((null x86-lookup-pdf)
+      (error "No PDF available. Set `x86-lookup-pdf'."))
+     ((not (file-exists-p x86-lookup-pdf))
+      (error "PDF not found. Check `x86-lookup-pdf'."))
+     ((setf x86-lookup-index (x86-lookup--load-index x86-lookup-pdf))
+      x86-lookup-index)
+     ((progn
+        (message "Generating mnemonic index ...")
+        (setf x86-lookup-index (x86-lookup-create-index))
+        (x86-lookup--save-index x86-lookup-pdf x86-lookup-index)))))
+  x86-lookup-index)
 
 (defun x86-lookup-browse-pdf (pdf page)
   "Launch a PDF viewer using `x86-lookup-browse-pdf-function'."
