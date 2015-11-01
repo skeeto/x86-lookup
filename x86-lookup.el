@@ -77,7 +77,10 @@ This function accepts two arguments: filename and page number."
                  (function :tag "Your own function")))
 
 (defcustom x86-lookup-cache-directory
-  (expand-file-name "x86-lookup" (or (getenv "XDG_CACHE_HOME") "~/.cache"))
+  (let ((base (or (getenv "XDG_CACHE_HOME")
+                  (getenv "LocalAppData")
+                  "~/.cache")))
+    (expand-file-name "x86-lookup" base))
   "Location to store the PDF mnemonic index."
   :type 'string)
 
