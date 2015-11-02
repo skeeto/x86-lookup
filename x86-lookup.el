@@ -123,8 +123,9 @@ This function requires the pdftotext command line program."
                when (looking-at mnemonic)
                nconc (x86-lookup--expand (match-string 1) page) into index
                do (forward-page)
-               finally (cl-return (cl-remove-duplicates
-                                   index :key #'car :test #'string=))))))
+               finally (cl-return
+                        (cl-remove-duplicates
+                         index :key #'car :test #'string= :from-end t))))))
 
 (defun x86-lookup--save-index (pdf index)
   "Save INDEX for PDF in `x86-lookup-cache-directory'."
