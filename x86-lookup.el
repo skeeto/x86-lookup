@@ -88,10 +88,10 @@ This function accepts two arguments: filename and page number."
   "Alist mapping instructions to page numbers.")
 
 (defvar x86-lookup--expansions
-  '(("h$" "" "nta" "t0" "t1" "t2" "w" "wt1")
-    ("cc$" "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le" "mp"
-           "mpe" "na" "nae" "nb" "nbe" "nc" "ne" "ng" "nge" "nl" "nle"
-           "no" "np" "ns" "nz" "o" "p" "pe" "po" "rcxz" "s" "z")
+  '(("h$" "" "nta" "t0" "t1" "t2")
+    ("cc$" "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le"
+           "na" "nae" "nb" "nbe" "nc" "ne" "ng" "nge" "nl" "nle" "no"
+           "np" "ns" "nz" "o" "p" "pe" "po" "rcxz" "s" "z")
     ("$" "")) ; fallback "match"
   "How to expand mnemonics into multiple mnemonics.")
 
