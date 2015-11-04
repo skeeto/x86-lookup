@@ -101,6 +101,18 @@ This function accepts two arguments: filename and page number."
     ("^CMOV\\(cc\\)$"
      "a" "ae" "b" "be" "c" "e" "g" "ge" "l" "le" "na" "nae" "nb" "nbe" "nc"
      "ne" "ng" "nge" "nl" "nle" "no" "np" "ns" "nz" "o" "p" "pe" "po" "s" "z")
+    ("^FCMOV\\(cc\\)$"
+     "b" "e" "be" "u" "nb" "ne" "nbe" "nu")
+    ("^LOOP\\(cc\\)$"
+     "e" "ne")
+    ("^VBROADCAST\\(\\)$"
+     "" "ss" "sd" "f128")
+    ("^VMASKMOV\\(\\)$"
+     "" "ps" "pd")
+    ("^VPBROADCAST\\(\\)$"
+     "" "b" "w" "d" "q" "I128")
+    ("^VPMASKMOV\\(\\)$"
+     "" "d" "q")
     ("\\(\\)" ; fallback "match"
      ""))
   "How to expand mnemonics into multiple mnemonics.")
