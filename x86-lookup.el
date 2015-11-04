@@ -42,6 +42,7 @@
 ;;; Code
 
 (require 'cl-lib)
+(require 'doc-view)
 
 (defgroup x86-lookup ()
   "Options for x86 instruction set lookup."
@@ -182,6 +183,13 @@ Defaults to the mnemonic under point."
 
 ;; PDF viewers:
 
+(defun x86-lookup-browse-pdf-emacs (pdf page)
+  "View PDF at PAGE using Emacs' `doc-view-mode' and `display-buffer'."
+  (if (doc-view-mode-p 'pdf)
+      (with-selected-window (display-buffer (find-file-noselect pdf :nowarn))
+        (doc-view-goto-page page))
+    (error "doc-view not available for PDF")))
+
 (defun x86-lookup-browse-pdf-xpdf (pdf page)
   "View PDF at PAGE using xpdf."
   (start-process "xpdf" nil "xpdf" "--" pdf (format "%d" page)))
@@ -204,12 +212,13 @@ Defaults to the mnemonic under point."
 
 (defun x86-lookup-browse-pdf-any (pdf page)
   "Try visiting PDF using the first viewer found."
-  ;; Ordered by my personal preference.
-  (or (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
+  (or (ignore-errors (x86-lookup-browse-pdf-emacs pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
       (ignore-errors (x86-lookup-browse-pdf-xpdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
       (ignore-errors (x86-lookup-browse-pdf-gv pdf page))
-      (x86-lookup-browse-pdf-browser pdf page)))
+      (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
+      (error "Could not find a PDF viewer.")))
 
 (provide 'x86-lookup)
 
