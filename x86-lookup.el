@@ -89,7 +89,7 @@ This function accepts two arguments: filename and page number."
   "Alist mapping instructions to page numbers.")
 
 (defvar x86-lookup--expansions
-  '(("\\(h\\)$"
+  '(("^PREFETCH\\(h\\)$"
      "" "nta" "t0" "t1" "t2")
     ("^J\\(cc\\)$"
      "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le" "na" "nae" "nb"
