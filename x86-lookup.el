@@ -89,25 +89,33 @@ This function accepts two arguments: filename and page number."
   "Alist mapping instructions to page numbers.")
 
 (defvar x86-lookup--expansions
-  '(("h$" "" "nta" "t0" "t1" "t2")
-    ("cc$" "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le"
-           "na" "nae" "nb" "nbe" "nc" "ne" "ng" "nge" "nl" "nle" "no"
-           "np" "ns" "nz" "o" "p" "pe" "po" "rcxz" "s" "z")
-    ("$" "")) ; fallback "match"
+  '(("\\(h\\)$"
+     "" "nta" "t0" "t1" "t2")
+    ("^J\\(cc\\)$"
+     "a" "ae" "b" "be" "c" "cxz" "e" "ecxz" "g" "ge" "l" "le" "na" "nae" "nb"
+     "nbe" "nc" "ne" "ng" "nge" "nl" "nle" "no" "np" "ns" "nz" "o" "p" "pe"
+     "po" "rcxz" "s" "z")
+    ("^SET\\(cc\\)$"
+     "a" "ae" "b" "be" "c" "e" "g" "ge" "l" "le" "na" "nae" "nb" "nbe" "nc"
+     "ne" "ng" "nge" "nl" "nle" "no" "np" "ns" "nz" "o" "p" "pe" "po" "s" "z")
+    ("^CMOV\\(cc\\)$"
+     "a" "ae" "b" "be" "c" "e" "g" "ge" "l" "le" "na" "nae" "nb" "nbe" "nc"
+     "ne" "ng" "nge" "nl" "nle" "no" "np" "ns" "nz" "o" "p" "pe" "po" "s" "z")
+    ("\\(\\)" ; fallback "match"
+     ""))
   "How to expand mnemonics into multiple mnemonics.")
 
 (defun x86-lookup--expand (names page)
   "Expand string of PDF-sourced mnemonics into user-friendly mnemonics."
   (let ((case-fold-search nil)
-        (rev-string-match-p (lambda (s re) (string-match-p re s))))
-    (cl-loop for mnemonic in (split-string names "/")
-             for match = (cl-assoc mnemonic x86-lookup--expansions
-                                   :test rev-string-match-p)
-             for chop-point = (string-match-p (car match) mnemonic)
-             for tails = (cdr match)
-             for chopped = (downcase (substring mnemonic 0 chop-point))
-             nconc (cl-loop for tail in tails
-                            collect (cons (concat chopped tail) page)))))
+        (rev-string-match-p (lambda (s re) (string-match re s))))
+    (save-match-data
+      (cl-loop for mnemonic in (split-string names "/")
+               for (_ . tails) = (cl-assoc mnemonic x86-lookup--expansions
+                                           :test rev-string-match-p)
+               nconc (cl-loop for tail in tails
+                              for rep = (replace-match tail nil nil mnemonic 1)
+                              collect (cons (downcase rep) page))))))
 
 (cl-defun x86-lookup-create-index (&optional (pdf x86-lookup-pdf))
   "Create an index alist from PDF mapping mnemonics to page numbers.
