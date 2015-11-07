@@ -9,7 +9,7 @@ Requirements:
 
 Set `x86-lookup-pdf` to the path of your instruction set PDF (from the
 above link), then use `M-x x86-lookup`. It will open the PDF at the
-page for the chosen mnemonic. An index will be build before the first
+page for the chosen mnemonic. An index will be built before the first
 lookup (takes about 10 seconds).
 
 Suggested key binding:
