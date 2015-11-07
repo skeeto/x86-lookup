@@ -187,6 +187,7 @@ This function requires the pdftotext command line program."
   "Launch a PDF viewer using `x86-lookup-browse-pdf-function'."
   (funcall x86-lookup-browse-pdf-function pdf page))
 
+;;;###autoload
 (defun x86-lookup (mnemonic)
   "Jump to the PDF documentation for MNEMONIC.
 Defaults to the mnemonic under point."
