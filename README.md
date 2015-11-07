@@ -1,4 +1,4 @@
-# Lookup x86 documentation from Emacs
+# Jump to x86 documentation from Emacs
 
 Requirements:
 
