@@ -5,7 +5,8 @@ Requirements:
 * `pdftotext` command line program from Poppler. On Linux, this
   program is probably already installed.
 * [Intel 64 and IA-32 Architecture Software Developer Manual][pdf].
-  Any PDF that contains the full instruction set reference will work.
+  Any PDF that contains the full instruction set reference will work,
+  though volume 2 is the best choice for x86-lookup.
 
 Set `x86-lookup-pdf` to the path of your instruction set PDF (from the
 above link), then use `M-x x86-lookup`. It will open the PDF at the
