@@ -204,12 +204,21 @@ Defaults to the mnemonic under point."
 
 ;; PDF viewers:
 
-(defun x86-lookup-browse-pdf-emacs (pdf page)
+(defun x86-lookup-browse-pdf-pdf-tools (pdf page)
+  "View PDF at PAGE using Emacs' `pdf-view-mode' and `display-buffer'."
+  (require 'pdf-tools)
+  (prog1 t
+    (with-selected-window (display-buffer (find-file-noselect pdf :nowarn))
+      (with-no-warnings
+        (pdf-view-goto-page page)))))
+
+(defun x86-lookup-browse-pdf-doc-view (pdf page)
   "View PDF at PAGE using Emacs' `doc-view-mode' and `display-buffer'."
-  (if (doc-view-mode-p 'pdf)
+  (prog1 t
+    (when (doc-view-mode-p 'pdf)
       (with-selected-window (display-buffer (find-file-noselect pdf :nowarn))
         (doc-view-goto-page page))
-    (error "doc-view not available for PDF")))
+      (error "doc-view not available for PDF"))))
 
 (defun x86-lookup-browse-pdf-xpdf (pdf page)
   "View PDF at PAGE using xpdf."
@@ -233,7 +242,8 @@ Defaults to the mnemonic under point."
 
 (defun x86-lookup-browse-pdf-any (pdf page)
   "Try visiting PDF using the first viewer found."
-  (or (ignore-errors (x86-lookup-browse-pdf-emacs pdf page))
+  (or (ignore-errors (x86-lookup-browse-pdf-pdf-tools pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-doc-view pdf page))
       (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
       (ignore-errors (x86-lookup-browse-pdf-xpdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
