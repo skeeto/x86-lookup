@@ -75,6 +75,8 @@ This function accepts two arguments: filename and page number."
                                 x86-lookup-browse-pdf-gv)
                  (function-item :tag "zathura" :value
                                 x86-lookup-browse-pdf-zathura)
+                 (function-item :tag "MuPDF" :value
+                                x86-lookup-browse-pdf-mupdf)
                  (function-item :tag "browse-url"
                                 :value x86-lookup-browse-pdf-browser)
                  (function :tag "Your own function")))
@@ -242,6 +244,15 @@ Defaults to the mnemonic under point."
   "View PDF at PAGE using zathura."
   (start-process "zathura" nil "zathura" "-P" (format "%d" page) "--" pdf))
 
+(defun x86-lookup-browse-pdf-mupdf (pdf page)
+  "View PDF at PAGE using MuPDF."
+  ;; MuPDF doesn't have a consistent name across platforms.
+  ;; Furthermore, Debian ships with a broken "mupdf" wrapper shell
+  ;; script and must be avoided. Here we use `executable-find' to
+  ;; avoid calling it as mupdf-x11 on non-X11 platforms.
+  (let ((exe (or (executable-find "mupdf-x11") "mupdf")))
+    (start-process "mupdf" nil exe "--" pdf (format "%d" page))))
+
 (defun x86-lookup-browse-pdf-browser (pdf page)
   "Visit PDF using `browse-url' with a fragment for the PAGE."
   (browse-url (format "file://%s#%d" pdf page)))
@@ -255,6 +266,7 @@ Defaults to the mnemonic under point."
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
       (ignore-errors (x86-lookup-browse-pdf-gv pdf page))
       (ignore-errors (x86-lookup-browse-pdf-zathura pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-mupdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
       (error "Could not find a PDF viewer.")))
 
