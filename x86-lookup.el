@@ -236,6 +236,10 @@ Defaults to the mnemonic under point."
   "View PDF at PAGE using gv."
   (start-process "gv" nil "gv" "-nocenter" (format "-page=%d" page) "--" pdf))
 
+(defun x86-lookup-browse-pdf-zathura (pdf page)
+  "View PDF at PAGE using zathura."
+  (start-process "zathura" nil "zathura" "-P" (format "%d" page) "--" pdf))
+
 (defun x86-lookup-browse-pdf-browser (pdf page)
   "Visit PDF using `browse-url' with a fragment for the PAGE."
   (browse-url (format "file://%s#%d" pdf page)))
