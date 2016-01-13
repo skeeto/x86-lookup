@@ -73,6 +73,8 @@ This function accepts two arguments: filename and page number."
                                 x86-lookup-browse-pdf-okular)
                  (function-item :tag "gv" :value
                                 x86-lookup-browse-pdf-gv)
+                 (function-item :tag "zathura" :value
+                                x86-lookup-browse-pdf-zathura)
                  (function-item :tag "browse-url"
                                 :value x86-lookup-browse-pdf-browser)
                  (function :tag "Your own function")))
@@ -252,6 +254,7 @@ Defaults to the mnemonic under point."
       (ignore-errors (x86-lookup-browse-pdf-xpdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
       (ignore-errors (x86-lookup-browse-pdf-gv pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-zathura pdf page))
       (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
       (error "Could not find a PDF viewer.")))
 
