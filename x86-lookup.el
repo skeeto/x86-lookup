@@ -200,9 +200,12 @@ Defaults to the mnemonic under point."
      (x86-lookup-ensure-index)
      (let* ((mnemonics (mapcar #'car x86-lookup-index))
             (thing (thing-at-point 'word))
-            (mnemonic (if (member thing mnemonics) thing nil)))
+            (mnemonic (if (member thing mnemonics) thing nil))
+            (prompt (if mnemonic
+                        (format "Mnemonic (default %s): " mnemonic)
+                      "Mnemonic: ")))
        (list
-        (completing-read "Mnemonic: " mnemonics nil t nil nil mnemonic)))))
+        (completing-read prompt mnemonics nil t nil nil mnemonic)))))
   (let ((page (cdr (assoc mnemonic x86-lookup-index))))
     (x86-lookup-browse-pdf (file-truename x86-lookup-pdf) page)))
 
