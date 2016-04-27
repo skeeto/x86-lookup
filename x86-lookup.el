@@ -219,10 +219,10 @@ Defaults to the mnemonic under point."
 (defun x86-lookup-browse-pdf-doc-view (pdf page)
   "View PDF at PAGE using Emacs' `doc-view-mode' and `display-buffer'."
   (prog1 t
-    (when (doc-view-mode-p 'pdf)
-      (with-selected-window (display-buffer (find-file-noselect pdf :nowarn))
-        (doc-view-goto-page page))
-      (error "doc-view not available for PDF"))))
+    (unless (doc-view-mode-p 'pdf)
+      (error "doc-view not available for PDF"))
+    (with-selected-window (display-buffer (find-file-noselect pdf :nowarn))
+      (doc-view-goto-page page))))
 
 (defun x86-lookup-browse-pdf-xpdf (pdf page)
   "View PDF at PAGE using xpdf."
