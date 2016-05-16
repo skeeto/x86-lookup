@@ -126,7 +126,9 @@ This function accepts two arguments: filename and page number."
   (let ((case-fold-search nil)
         (rev-string-match-p (lambda (s re) (string-match re s))))
     (save-match-data
-      (cl-loop for mnemonic in (split-string names "/")
+      (cl-loop for mnemonic-raw in (split-string names " */ *")
+               ;; Collapse "int 3" and "int n" into "int"
+               for mnemonic = (replace-regexp-in-string " .+$" "" mnemonic-raw)
                for (_ . tails) = (cl-assoc mnemonic x86-lookup--expansions
                                            :test rev-string-match-p)
                nconc (cl-loop for tail in tails
