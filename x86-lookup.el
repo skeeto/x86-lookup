@@ -152,22 +152,26 @@ This function requires the pdftotext command line program."
                         (cl-remove-duplicates
                          index :key #'car :test #'string= :from-end t))))))
 
+(defun x86-lookup--index-file (pdf)
+  "Return index filename from PDF filename."
+  (concat (sha1 pdf) "_v2"))
+
 (defun x86-lookup--save-index (pdf index)
   "Save INDEX for PDF in `x86-lookup-cache-directory'."
-  (let* ((hash (sha1 pdf))
-         (cache-file (expand-file-name hash x86-lookup-cache-directory)))
+  (let* ((index-file (x86-lookup--index-file pdf))
+         (cache-path (expand-file-name index-file x86-lookup-cache-directory)))
     (mkdir x86-lookup-cache-directory t)
-    (with-temp-file cache-file
+    (with-temp-file cache-path
       (prin1 index (current-buffer)))
     index))
 
 (defun x86-lookup--load-index (pdf)
   "Return index PDF from `x86-lookup-cache-directory'."
-  (let* ((hash (sha1 pdf))
-         (cache-file (expand-file-name hash x86-lookup-cache-directory)))
-    (when (file-exists-p cache-file)
+  (let* ((index-file (x86-lookup--index-file pdf))
+         (cache-path (expand-file-name index-file x86-lookup-cache-directory)))
+    (when (file-exists-p cache-path)
       (with-temp-buffer
-        (insert-file-contents cache-file)
+        (insert-file-contents cache-path)
         (setf (point) (point-min))
         (ignore-errors (read (current-buffer)))))))
 
