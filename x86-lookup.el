@@ -156,7 +156,7 @@ This function requires the pdftotext command line program."
 
 (defun x86-lookup--index-file (pdf)
   "Return index filename from PDF filename."
-  (concat (sha1 pdf) "_v2"))
+  (concat (sha1 pdf) "_v3"))
 
 (defun x86-lookup--save-index (pdf index)
   "Save INDEX for PDF in `x86-lookup-cache-directory'."
