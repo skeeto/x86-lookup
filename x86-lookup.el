@@ -77,6 +77,8 @@ This function accepts two arguments: filename and page number."
                                 x86-lookup-browse-pdf-zathura)
                  (function-item :tag "MuPDF" :value
                                 x86-lookup-browse-pdf-mupdf)
+                 (function-item :tag "Sumatra PDF" :value
+                                x86-lookup-browse-pdf-sumatrapdf)
                  (function-item :tag "browse-url"
                                 :value x86-lookup-browse-pdf-browser)
                  (function :tag "Your own function")))
@@ -257,6 +259,10 @@ Defaults to the mnemonic under point."
   "View PDF at PAGE using zathura."
   (start-process "zathura" nil "zathura" "-P" (format "%d" page) "--" pdf))
 
+(defun x86-lookup-browse-pdf-sumatrapdf (pdf page)
+  "View PDF at PAGE using Sumatra PDF."
+  (start-process "sumatrapdf" nil "sumatrapdf" "-page" (format "%d" page) pdf))
+
 (defun x86-lookup-browse-pdf-mupdf (pdf page)
   "View PDF at PAGE using MuPDF."
   ;; MuPDF doesn't have a consistent name across platforms.
@@ -280,6 +286,7 @@ Defaults to the mnemonic under point."
       (ignore-errors (x86-lookup-browse-pdf-gv pdf page))
       (ignore-errors (x86-lookup-browse-pdf-zathura pdf page))
       (ignore-errors (x86-lookup-browse-pdf-mupdf pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-sumatrapdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
       (error "Could not find a PDF viewer.")))
 
