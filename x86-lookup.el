@@ -77,6 +77,8 @@ This function accepts two arguments: filename and page number."
                                 x86-lookup-browse-pdf-zathura)
                  (function-item :tag "MuPDF" :value
                                 x86-lookup-browse-pdf-mupdf)
+                 (function-item :tag "Sumatra PDF" :value
+                                x86-lookup-browse-pdf-sumatrapdf)
                  (function-item :tag "browse-url"
                                 :value x86-lookup-browse-pdf-browser)
                  (function :tag "Your own function")))
@@ -274,16 +276,16 @@ Defaults to the mnemonic under point."
 
 (defun x86-lookup-browse-pdf-any (pdf page)
   "Try visiting PDF using the first viewer found."
-  (or (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
-      (ignore-errors (x86-lookup-browse-pdf-sumatrapdf pdf page))
+  (or (ignore-errors (x86-lookup-browse-pdf-pdf-tools pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-doc-view pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
       (ignore-errors (x86-lookup-browse-pdf-xpdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
       (ignore-errors (x86-lookup-browse-pdf-gv pdf page))
       (ignore-errors (x86-lookup-browse-pdf-zathura pdf page))
       (ignore-errors (x86-lookup-browse-pdf-mupdf pdf page))
+      (ignore-errors (x86-lookup-browse-pdf-sumatrapdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
-      (ignore-errors (x86-lookup-browse-pdf-pdf-tools pdf page))
-      (ignore-errors (x86-lookup-browse-pdf-doc-view pdf page))
       (error "Could not find a PDF viewer.")))
 
 (provide 'x86-lookup)
