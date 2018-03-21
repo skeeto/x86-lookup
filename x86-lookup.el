@@ -138,8 +138,10 @@ This function accepts two arguments: filename and page number."
 (cl-defun x86-lookup-create-index (&optional (pdf x86-lookup-pdf))
   "Create an index alist from PDF mapping mnemonics to page numbers.
 This function requires the pdftotext command line program."
-  (let ((mnemonic (concat "INSTRUCTION SET REFERENCE, [A-Z]-[A-Z]\n\n"
-                          "\\([[:alnum:]/ ]+\\)[- ]?—"))
+  (let ((mnemonic (concat "\\(?:.*\n\n?\\)?"
+                          "\\([[:alnum:]/[:blank:]]+\\)[[:blank:]]*\\(?:--\\|—\\).*\n\n?"
+                          "Opcode"
+                          ))
         (coding-system-for-read 'utf-8)
         (coding-system-for-write 'utf-8)
         (case-fold-search nil))
