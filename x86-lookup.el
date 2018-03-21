@@ -139,12 +139,11 @@ This function accepts two arguments: filename and page number."
   "Create an index alist from PDF mapping mnemonics to page numbers.
 This function requires the pdftotext command line program."
   (let ((mnemonic (concat "\\(?:.*\n\n?\\)?"
-                          "\\([[:alnum:]/[:blank:]]+\\)[[:blank:]]*\\(?:--\\|—\\).*\n\n?"
-                          "Opcode"
-                          ))
+                          "\\([[:alnum:]/[:blank:]]+\\)[[:blank:]]*\\(?:--\\|—\\)\\(?:.*\n\n?\\)\\{1,3\\}"
+                          "[[:blank:]]*Opcode"))
         (coding-system-for-read 'utf-8)
         (coding-system-for-write 'utf-8)
-        (case-fold-search nil))
+        (case-fold-search t))
     (with-temp-buffer
       (call-process x86-lookup-pdftotext-program nil t nil
                     (file-truename pdf) "-")
