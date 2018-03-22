@@ -199,7 +199,7 @@ This function requires the pdftotext command line program."
 
 (defun x86-lookup-ensure-and-update-index ()
   "Ensure the PDF index has been created and (unconditionally) updated.
-Useful for forcibly syncing the index with the current PDF without resorting 
+Useful for forcibly syncing the index with the current PDF without resorting
 to manual deletion of index file on filesystem."
   (interactive)
   (cond
@@ -207,11 +207,10 @@ to manual deletion of index file on filesystem."
     (error "No PDF available. Set `x86-lookup-pdf'."))
    ((not (file-exists-p x86-lookup-pdf))
     (error "PDF not found. Check `x86-lookup-pdf'."))
-   ((progn
-      (message "Generating mnemonic index ...")
-      (setf x86-lookup-index (x86-lookup-create-index))
-      (x86-lookup--save-index x86-lookup-pdf x86-lookup-index)
-      (message "Finish generating mnemonic index.")))))
+   ((message "Generating mnemonic index ...")
+    (setf x86-lookup-index (x86-lookup-create-index))
+    (x86-lookup--save-index x86-lookup-pdf x86-lookup-index)
+    (message "Finished generating mnemonic index."))))
 
 (defun x86-lookup-browse-pdf (pdf page)
   "Launch a PDF viewer using `x86-lookup-browse-pdf-function'."
