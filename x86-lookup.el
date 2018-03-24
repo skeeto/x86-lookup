@@ -294,7 +294,6 @@ Defaults to the mnemonic under point."
 (defun x86-lookup-browse-pdf-any (pdf page)
   "Try visiting PDF using the first viewer found."
   (or (ignore-errors (x86-lookup-browse-pdf-pdf-tools pdf page))
-      (ignore-errors (x86-lookup-browse-pdf-doc-view pdf page))
       (ignore-errors (x86-lookup-browse-pdf-evince pdf page))
       (ignore-errors (x86-lookup-browse-pdf-xpdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-okular pdf page))
@@ -303,6 +302,8 @@ Defaults to the mnemonic under point."
       (ignore-errors (x86-lookup-browse-pdf-mupdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-sumatrapdf pdf page))
       (ignore-errors (x86-lookup-browse-pdf-browser pdf page))
+      ;; Users beware: Browsing SDM with doc-view may hang Emacs.
+      (ignore-errors (x86-lookup-browse-pdf-doc-view pdf page))
       (error "Could not find a PDF viewer.")))
 
 (provide 'x86-lookup)
