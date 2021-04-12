@@ -233,6 +233,8 @@ Defaults to the mnemonic under point."
                       "Mnemonic: ")))
        (list
         (completing-read prompt mnemonics nil t nil nil mnemonic)))))
+  (unless (called-interactively-p 'any)
+    (x86-lookup-ensure-index))
   (let ((page (cdr (assoc mnemonic x86-lookup-index))))
     (x86-lookup-browse-pdf (file-truename x86-lookup-pdf) page)))
 
