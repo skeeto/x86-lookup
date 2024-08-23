@@ -150,7 +150,7 @@ This function requires the pdftotext command line program."
     (with-temp-buffer
       (call-process x86-lookup-pdftotext-program nil t nil
                     (file-truename pdf) "-")
-      (setf (point) (point-min))
+      (goto-char (point-min))
       (cl-loop for page upfrom 1
                while (< (point) (point-max))
                when (looking-at mnemonic)
@@ -180,7 +180,7 @@ This function requires the pdftotext command line program."
     (when (file-exists-p cache-path)
       (with-temp-buffer
         (insert-file-contents cache-path)
-        (setf (point) (point-min))
+        (goto-char (point-min))
         (ignore-errors (read (current-buffer)))))))
 
 (defun x86-lookup-ensure-index ()
